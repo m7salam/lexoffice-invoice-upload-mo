@@ -47,7 +47,11 @@ class AttachmentCollector:
 
     def select(self, maildir: str = 'Inbox') -> tuple[str, list[bytes | None]]:
         """Select mail directory on mail server"""
-        return self.imap.select(maildir)
+        try:
+            return self.imap.select(maildir)
+        except Exception as e:
+            print(f"Failed to select mailbox {maildir}. Error: {str(e)}")
+            raise e
 
     def searchMails(self, filter: str) -> tuple[str, list[bytes | None]]:
         """Search for mails in selected mail directory with filter"""
@@ -91,7 +95,9 @@ class AttachmentCollector:
                         # Check if fileName ending matches list of file extensions from config
                         if fileName.lower().endswith(fileExtensionFilter):
                             foundFiles.append((fileName, mailDir, emailMessage, part))
-                        
+                    # set email unseen again if no attachement was found
+                    else:
+                        self.imap.store(mails[0].decode('utf-8').replace(' ',','), '-FLAGS', '\Seen')
         return foundFiles
 
     def downloadAttachements(self, file: list, tmpFile: _TemporaryFileWrapper) -> list[list, _TemporaryFileWrapper]:

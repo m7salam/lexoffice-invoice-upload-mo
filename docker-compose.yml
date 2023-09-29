@@ -5,9 +5,13 @@ volumes:
 
 services:
   app:
-    image: makiit/lexoffice-invoice-upload:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: m7salam/smicolon-lex-office-invoice-uploader:latest
+    container_name: lexoffice_invoice_upload
     volumes:
-      - config:/app/config
+      - ./config:/app/config
     environment:
       TZ: Europe/Berlin
       CRON: '*/5 * * * *'

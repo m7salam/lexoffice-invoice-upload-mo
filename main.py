@@ -129,6 +129,7 @@ def main(config):
         if mailDir.endswith('/') or mailDir.startswith('/'):
             print("Warning! Paths in ['Mail']['maildir'] should not start or end with a slash, so it will be removed from the path:", mailDir)
             mailDir = mailDir.lstrip('/').rstrip('/')
+        print(f"Selecting mailDir: {mailDir}")
         invoicecollector.select(mailDir)
         status, mails = invoicecollector.searchMails(mailFilter)
         foundFiles.append(invoicecollector.searchAttachements(mails, mailDir, tuple(fileExtensionFilter), tuple(subjectFilter)))
